@@ -22,8 +22,7 @@ async function main() {
 	const api = await ApiPromise.create({ provider });
 
 	console.log(
-		`Connected to node: ${options.endpoint} ${(await api.rpc.system.chain()).toHuman()} [ss58: ${
-			api.registry.chainSS58
+		`Connected to node: ${options.endpoint} ${(await api.rpc.system.chain()).toHuman()} [ss58: ${api.registry.chainSS58
 		}]`
 	);
 
