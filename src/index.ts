@@ -11,7 +11,7 @@ import { BN } from '@polkadot/util';
 const optionsPromise = yargs(hideBin(process.argv)).option('endpoint', {
 	alias: 'e',
 	type: 'string',
-	default: 'wss://rpc.polkadot.io',
+	default: 'wss://rpc.ibp.network/westend',
 	description: 'the wss endpoint. It must allow unsafe RPCs.',
 	required: true
 }).argv;
@@ -35,7 +35,7 @@ async function main() {
 
 	// reading a constant
 	const ED: Balance = api.consts.balances.existentialDeposit;
-	console.log(ED.toHuman());
+	console.log(`ED Balance ${ED.toHuman()}`);
 
 	// subscribe to finalized blocks:
 	const unsub = await api.rpc.chain.subscribeFinalizedHeads((header) => {
