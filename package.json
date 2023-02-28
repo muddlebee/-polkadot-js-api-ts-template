@@ -36,6 +36,7 @@
 	},
 	"dependencies": {
 		"@polkadot/api": "9.13.5",
+		"dotenv": "^16.0.3",
 		"yargs": "^17.6.2"
 	}
 }
