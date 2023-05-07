@@ -25,7 +25,7 @@ async function fetchIdentityEvents(api) {
 
 			events.forEach(({ phase, event }) => {
 				// Check if the event is associated with the extrinsic
-				if (phase.       && phase.asApplyExtrinsic.toNumber() === index) {
+				if (phase.isApplyExtrinsic && phase.asApplyExtrinsic.toNumber() === index) {
 					console.log(`  Event: ${event.section}.${event.method}`);
 				}
 			});
