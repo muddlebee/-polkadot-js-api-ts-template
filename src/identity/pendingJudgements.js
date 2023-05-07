@@ -5,11 +5,13 @@ let api;
 async function main() {
 	const provider = new WsProvider("wss://kusama-rpc.polkadot.io");
 	api = await ApiPromise.create({ provider , noInitWarn: true});
-	const accountId = "HTyzs9XAxUpHpNe7Kwhp3M5kCJuxFm4AYRCpYjcHdhiVDFE";
+	// const accountId = "HTyzs9XAxUpHpNe7Kwhp3M5kCJuxFm4AYRCpYjcHdhiVDFE";
 
 	//judgment pending for this account
 	//const accountId = "EwGFsop19Jm9GWALMvVWDiaiqPH4bAyTdwRBgGLAgbLD5B7";
 
+	//regisrar accountID
+	const accountId = "Fom9M5W6Kck1hNAiE2mDcZ67auUCiNTzLBUdQy4QnxHSxdn";
 	await getAllRegistrars();
 	await getChildren(accountId);
 	await getJudgements(accountId);
@@ -74,8 +76,8 @@ async function getPendingJudgements(accountId) {
 		console.log("Pending judgements for account:", accountId);
 		judgements.forEach(([registrarIndex, judgement]) => {
 			console.log(`judgement`, judgement.toString());
-			if (judgement.isRequested) {
-				console.log(`Registrar #${registrarIndex.toString()}:`, judgement.toString());
+			if (judgement.JudgementRequested) {
+				console.log(`JudgementRequested from Registrar #${registrarIndex.toString()}:`, judgement.toString());
 			}
 		});
 		judgements.forEach((judgement) => {

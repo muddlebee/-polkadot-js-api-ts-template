@@ -10,6 +10,7 @@ async function fetchIdentityEvents(api) {
   for (const eventRecord of events) {
     const { event } = eventRecord;
     const { section, method } = event;
+  //  console.log(`event`, event.toString());
     if (api.events.identity.IdentitySet.is(event)) {
       console.log(`Found identity-related event at block #${blockNumber}:`);
       if (section === 'identity') {
