@@ -12,7 +12,6 @@ async function fetchIdentityEvents(api) {
 		const { section, method } = event;
 		//  console.log(`event`, event.toString());
 		if (api.events.identity.JudgementGiven.is(event)) {
-			api.events.identity.BatchCompleted;
 			if (section === "identity") {
 				const accountId = event.data[0].toString();
 				console.log(`event`, event.toString());

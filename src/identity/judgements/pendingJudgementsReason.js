@@ -14,11 +14,14 @@ async function main() {
 	// const accountId = "Fom9M5W6Kck1hNAiE2mDcZ67auUCiNTzLBUdQy4QnxHSxdn";
 
 	// judgement given for this account
-	const accountId = "E5hWebLmPSFSUq3nSfGuFYopAK65fooqiXV91gQwuZGuMad"
-	await getAllRegistrars();
-	await getChildren(accountId);
+	// const accountId = "E5hWebLmPSFSUq3nSfGuFYopAK65fooqiXV91gQwuZGuMad"
+
+	//judgement pending for this account
+	const accountId = "Fqwje9uhjyWGhgVaTokZVwskXzCrFZDVS4PRz8rWxA5bnza";
+//	await getAllRegistrars();
+//	await getChildren(accountId);
 	await getJudgements(accountId);
-	await getPendingJudgements(accountId);
+	// await getPendingJudgements(accountId);
 	api.disconnect();
 }
 

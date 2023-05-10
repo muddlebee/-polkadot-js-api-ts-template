@@ -5,20 +5,12 @@ let api;
 async function main() {
 	const provider = new WsProvider("wss://kusama-rpc.polkadot.io");
 	api = await ApiPromise.create({ provider , noInitWarn: true});
-	// const accountId = "HTyzs9XAxUpHpNe7Kwhp3M5kCJuxFm4AYRCpYjcHdhiVDFE";
-
-	//judgment pending for this account
-	//const accountId = "EwGFsop19Jm9GWALMvVWDiaiqPH4bAyTdwRBgGLAgbLD5B7";
-
-	//regisrar accountID
-	// const accountId = "Fom9M5W6Kck1hNAiE2mDcZ67auUCiNTzLBUdQy4QnxHSxdn";
-
-	// judgement given for this account
-	const accountId = "E5hWebLmPSFSUq3nSfGuFYopAK65fooqiXV91gQwuZGuMad"
-	await getAllRegistrars();
+	// sub identity is present for this account
+	const accountId = "HTyzs9XAxUpHpNe7Kwhp3M5kCJuxFm4AYRCpYjcHdhiVDFE";
+//	await getAllRegistrars();
 	await getChildren(accountId);
-	await getJudgements(accountId);
-	await getPendingJudgements(accountId);
+//	await getJudgements(accountId);
+	// await getPendingJudgements(accountId);
 	api.disconnect();
 }
 
