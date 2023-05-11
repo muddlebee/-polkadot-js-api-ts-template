@@ -1,9 +1,7 @@
-const { ApiPromise, WsProvider } = require("@polkadot/api");
+const { ApiPromise, WsProvider } = require('@polkadot/api');
 
 async function fetchIdentityEvents(api) {
-
-
-	const blockNumber = "17740803";
+	const blockNumber = '17740803';
 	const blockHash = await api.rpc.chain.getBlockHash(blockNumber);
 	const events = await api.query.system.events.at(blockHash);
 
@@ -12,7 +10,7 @@ async function fetchIdentityEvents(api) {
 		const { section, method } = event;
 		//  console.log(`event`, event.toString());
 		if (api.events.identity.JudgementGiven.is(event)) {
-			if (section === "identity") {
+			if (section === 'identity') {
 				const accountId = event.data[0].toString();
 				console.log(`event`, event.toString());
 				console.log(`  Section: ${section}`);
@@ -20,12 +18,11 @@ async function fetchIdentityEvents(api) {
 				console.log(`  Event data: ${event.data}`);
 			}
 		}
-
 	}
 }
 
 async function main() {
-	const provider = new WsProvider("wss://kusama-rpc.polkadot.io");
+	const provider = new WsProvider('wss://kusama-rpc.polkadot.io');
 	const api = await ApiPromise.create({ provider, noInitWarn: true });
 	await fetchIdentityEvents(api);
 
