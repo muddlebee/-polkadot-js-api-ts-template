@@ -7,8 +7,8 @@ let api;
 async function main() {
 	const provider = new WsProvider('wss://kusama-rpc.polkadot.io');
 	api = await ApiPromise.create({ provider });
-	const accountId = 'HTyzs9XAxUpHpNe7Kwhp3M5kCJuxFm4AYRCpYjcHdhiVDFE';
-	await getIdentity(accountId);
+//	const accountId = 'Cb3ZF5tmeTEDR44MRLAPH3agiv5ntLG6VMZ2U5x8QM3XkGY';
+//	await getIdentityStorage(api, accountId);
 	api.disconnect();
 }
 
@@ -76,7 +76,7 @@ async function getIdentity(accountId) {
 	if (identity.isSome) {
 		const { info, judgements, deposit } = identity.unwrap();
 		registrarInfo = {
-			display: info.display.asRaw.toHuman(),
+			display: info.display.asRaw.toUtf8(),
 			legal: info.legal.asRaw.toHuman(),
 			web: info.web.asRaw.toHuman(),
 			riot: info.riot.asRaw.toHuman(),
@@ -106,4 +106,47 @@ async function getIdentity(accountId) {
 	updateRegistrars(registrarInfo);
 }
 
+async function getIdentityStorage(api, accountId) {
+	try {
+		console.log("getIdentityStorage accountId: ", accountId);
+		const accountId32 = api.createType('AccountId32', accountId);
+
+		const identityInfo = await api.query.identity.identityOf(accountId32);
+		let identity = {};
+		if (identityInfo.isSome) {
+			const {info, judgements, deposit} = identityInfo.unwrap();
+			identity.info = {
+				display: info.display.asRaw.toUtf8(),
+				legal: info.legal.asRaw.toHuman(),
+				web: info.web.asRaw.toHuman(),
+				riot: info.riot.asRaw.toHuman(),
+				email: info.email.asRaw.toHuman(),
+				image: info.image.asRaw.toHuman(),
+				twitter: info.twitter.asRaw.toHuman(),
+				pgpFingerprint: info.pgpFingerprint.isSome ? info.pgpFingerprint.unwrap().toHex() : null,
+			};
+			if (judgements.length > 0) {
+				let judgementsList = [];
+				judgements.forEach(([registrarIndex, judgement]) => {
+					let judgementInfo = {
+						registrarIndex: registrarIndex.toNumber(),
+						judgement: judgement.toString()
+					};
+					judgementsList.push(judgementInfo);
+				});
+				identity.judgements = judgementsList;
+			}
+		}
+		identity.accountId = accountId;
+
+		return identity;
+	} catch (error) {
+		console.error('An error occurred:', error);
+	}
+
+}
 main().catch(console.error);
+
+module.exports = {
+	getIdentityStorage,
+}

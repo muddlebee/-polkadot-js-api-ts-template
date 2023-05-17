@@ -1,4 +1,7 @@
 const { ApiPromise, WsProvider } = require('@polkadot/api');
+const MongoClient = require('mongodb').MongoClient;
+const uri = 'mongodb://localhost:27017';
+const client = new MongoClient(uri);
 
 async function fetchIdentityEvents(api) {
 	const blockNumber = '17664915';
@@ -14,7 +17,7 @@ async function fetchIdentityEvents(api) {
 			console.log(`Found identity-related event at block #${blockNumber}:`);
 
 			if (phase.isApplyExtrinsic) {
-				const extrinsicIndex = phase.asApplyExtrinsic.toNumber();
+				const extrinsicIndex = phase.asApplyExtrinsic;
 				const extrinsic = block.block.extrinsics[extrinsicIndex];
 
 				console.log(`Extrinsic : ${JSON.stringify(extrinsic.toHuman())}`);
@@ -38,12 +41,16 @@ async function fetchIdentityEvents(api) {
 	}
 }
 
+// add or update the subidentity collection
+async function insertSubIdentity(event) {}
 async function main() {
 	const provider = new WsProvider('wss://kusama-rpc.polkadot.io');
 	const api = await ApiPromise.create({ provider, noInitWarn: true });
+	await client.connect();
+
 	await fetchIdentityEvents(api);
 
-	api.disconnect();
+	await api.disconnect();
 }
 
 main();

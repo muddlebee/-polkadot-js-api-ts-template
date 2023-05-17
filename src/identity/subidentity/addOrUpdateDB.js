@@ -1,9 +1,7 @@
-const MongoClient = require('mongodb').MongoClient;
-const uri = 'mongodb://localhost:27017';
-const client = new MongoClient(uri);
+const { client, getCol } = require('../db');
 
 const subIdentityToUpdate = {
-	subAccountId: '5G5b5q5yQLkSWwknsiPtjujPv3XM4Trxi5d4PgKMMk3gfGTE',
+	subAccountId: '5G6c6r6zQLkSWwknsiPtjujPv3XM4Trxi5d4PgKMMk3gfGTE',
 	display: 'Updated Display',
 	email: 'updated-email@example.com'
 };
@@ -16,7 +14,7 @@ const subIdentityToAdd = {
 
 async function main() {
 	try {
-		await client.connect();
+		//	await client.connect();
 		await addOrUpdateDB(
 			'5Gw3s7q4QLkSWwknsiPtjujPv3XM4Trxi5d4PgKMMk3gfGTE',
 			subIdentityToUpdate,
@@ -31,10 +29,8 @@ async function main() {
 
 async function addOrUpdateDB(accountId, subIdentityToUpdate, subIdentityToAdd) {
 	try {
-		const db = client.db('kusama');
-		const identityCollection = db.collection('identityTest');
-
-		await identityCollection.drop();
+		const col = await getCol();
+		// await identityCollection.drop();
 		const newIdentity = {
 			_id: '5fda0a5c7b89192c665e35d7',
 			accountId: '5Gw3s7q4QLkSWwknsiPtjujPv3XM4Trxi5d4PgKMMk3gfGTE',
@@ -42,7 +38,7 @@ async function addOrUpdateDB(accountId, subIdentityToUpdate, subIdentityToAdd) {
 			web: '<https://alice.example.com>',
 			subIdentities: [
 				{
-					subAccountId: '5G5b5q5yQLkSWwknsiPtjujPv3XM4Trxi5d4PgKMMk3gfGTE',
+					subAccountId: '5G5b5q5yQLkSWwknsiPtjujPv3XM4Trxi5d4PgKMMk3gfGTE3',
 					display: 'Alice Sub 1',
 					email: 'alice-sub1@example.com'
 				},
@@ -54,24 +50,39 @@ async function addOrUpdateDB(accountId, subIdentityToUpdate, subIdentityToAdd) {
 			]
 		};
 
-		const result = await identityCollection.insertOne(newIdentity);
-		// Update existing subIdentity
-		const updateResult = await identityCollection.updateOne(
-			{ accountId: accountId, 'subIdentities.subAccountId': subIdentityToUpdate.subAccountId },
-			{ $set: { 'subIdentities.$': subIdentityToUpdate } }
-		);
-		console.log(
-			`${updateResult.matchedCount} document(s) matched the filter, updated ${updateResult.modifiedCount} document(s)`
-		);
+		await col.updateOne({ accountId: accountId }, { $set: newIdentity }, { upsert: true });
 
-		// Add new subIdentity
-		const addResult = await identityCollection.updateOne(
-			{ accountId: accountId },
-			{ $addToSet: { subIdentities: subIdentityToAdd } }
-		);
-		console.log(
-			`${addResult.matchedCount} document(s) matched the filter, updated ${addResult.modifiedCount} document(s)`
-		);
+		const identity = await col.findOne({
+			accountId,
+			'subIdentities.subAccountId': subIdentityToAdd.subAccountId
+		});
+
+		if (identity) {
+			// Subidentity exists, update it
+			const result = await col.updateOne(
+				{
+					accountId,
+					'subIdentities.subAccountId': subIdentityToUpdate.subAccountId
+				},
+				{
+					$set: {
+						'subIdentities.$': subIdentityToUpdate
+					}
+				}
+			);
+			console.log(`${result.modifiedCount} document(s) was/were updated.`);
+		} else {
+			// Subidentity doesn't exist, add it
+			const result = await col.updateOne(
+				{ accountId },
+				{
+					$push: {
+						subIdentities: subIdentityToAdd
+					}
+				}
+			);
+			console.log(`${result.modifiedCount} document(s) was/were updated.`);
+		}
 	} catch (err) {
 		console.error(`Error occurred while adding/updating sub-identity: ${err}`);
 	}

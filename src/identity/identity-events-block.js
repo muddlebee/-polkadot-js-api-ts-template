@@ -3,15 +3,15 @@ const { ApiPromise, WsProvider } = require('@polkadot/api');
 async function fetchIdentityEvents(api) {
 
 
-  const blockNumber = '17733544';
+  const blockNumber = '17664915';
   const blockHash = await api.rpc.chain.getBlockHash(blockNumber);
   const events = await api.query.system.events.at(blockHash);
 
   for (const eventRecord of events) {
     const { event } = eventRecord;
     const { section, method } = event;
-    if (api.events.identity.IdentitySet.is(event)) {
-      console.log(`Found identity-related event at block #${blockNumber}:`);
+    if (api.events.identity.SubIdentityAdded.is(event)) {
+      console.log(`event`, event.toString());
       if (section === 'identity') {
         const accountId = event.data[0].toString();
         console.log(`event`, event.toString());

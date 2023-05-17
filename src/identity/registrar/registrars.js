@@ -4,13 +4,6 @@ const MongoClient = require('mongodb').MongoClient;
 const uri = 'mongodb://localhost:27017';
 const client = new MongoClient(uri);
 let api;
-async function main() {
-	const provider = new WsProvider('wss://kusama-rpc.polkadot.io');
-	api = await ApiPromise.create({ provider });
-	await getAllRegistrars();
-	api.disconnect();
-}
-
 async function dropCollectionRegistrars() {
 	try {
 		await client.connect();
@@ -23,6 +16,13 @@ async function dropCollectionRegistrars() {
 	} finally {
 		await client.close();
 	}
+}
+
+async function main() {
+	const provider = new WsProvider('wss://kusama-rpc.polkadot.io');
+	api = await ApiPromise.create({ provider });
+	await getAllRegistrars();
+	await api.disconnect();
 }
 
 async function insertRegistrars(event) {
