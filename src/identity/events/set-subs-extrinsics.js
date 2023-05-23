@@ -14,7 +14,6 @@ async function fetchIdentityEvents(api) {
 			const extrinsicIndex = phase.asApplyExtrinsic;
 			const extrinsic = block.block.extrinsics[extrinsicIndex];
 			//	console.log(`Extrinsic : ${JSON.stringify(extrinsic.toHuman())}`);
-			const { section, method } = extrinsic;
 			if (api.events.system.ExtrinsicSuccess.is(event)) {
 				const { section, method } = extrinsic.method;
 
@@ -24,6 +23,11 @@ async function fetchIdentityEvents(api) {
 					const extrinsicData = extrinsic.method.args[0]; // assuming the data you're interested in is the first argument
 					console.log(`extrinsicData`, extrinsicData.toHuman());
 					console.log(`Found identity-related event at block #${blockNumber}:`);
+
+					extrinsicData.forEach(([accountId, display]) => {
+						console.log(`accountId`, accountId.toString());
+						console.log(`display`, display.asRaw.toUtf8());
+					});
 				}
 			}
 		}
@@ -37,6 +41,7 @@ async function main() {
 	const api = await ApiPromise.create({ provider, noInitWarn: true });
 	await fetchIdentityEvents(api);
 
+/*
 
 	extrinsicData[0].value = extrinsicData[0].value.map((obj) => {
 		const [key, value] = Object.entries(obj.col2)[0];
@@ -55,6 +60,7 @@ async function main() {
 		console.log(`AccountId: ${accountId.toString()}`);
 		console.log(`Data: ${data.asRaw.toUtf8()}`);
 	});
+*/
 
 	/*	extrinsicData[0].value.forEach(value => {
 			const accountId = api.createType('AccountId', value.col1);
