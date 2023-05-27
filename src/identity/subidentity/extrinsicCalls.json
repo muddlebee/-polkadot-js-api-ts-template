@@ -1,0 +1,17 @@
+extrinsicCalls []
+extrinsicCalls [
+  {
+    indexer: {
+      blockHeight: 299347,
+      blockHash: '0xf5c71f541a1074fd22c6ca43fa187a3ca1ec4705072d817278f7478923fc8441',
+      blockTime: 1576802412000,
+      extrinsicIndex: 1,
+      callIndex: 0
+    },
+    callIndex: '0x0900',
+    section: 'finalityTracker',
+    method: 'finalHint',
+    args: [ [Object] ],
+    eventAttributes: { isCall: false }
+  }
+]
